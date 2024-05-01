@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1058860296465",
+    "project_id": "fyp-sua-app",
+    "storage_bucket": "fyp-sua-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058860296465:android:a7503819d1a6a3ac1104b0",
+        "android_client_info": {
+          "package_name": "com.lumins.sua"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfKkHEWDiAuiGjJH_cN2zZ2eFlD1Hi9Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

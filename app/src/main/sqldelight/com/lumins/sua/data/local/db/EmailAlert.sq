@@ -1,0 +1,29 @@
+Import kotlin.Int;
+
+CREATE TABLE EmailAlert(
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT,
+    email Text NOT NULL UNIQUE,
+    subject Text NOT NULL,
+    body Text NOT NULL,
+    links Text NOT NULL,
+    alertTime Text NOT NULL
+);
+
+
+insertEmailAlert:
+INSERT OR REPLACE INTO
+EmailAlert(email, subject, body, links, alertTime)
+VALUES(?, ?, ?, ?, ?);
+
+getAllEmailAlerts:
+SELECT * FROM EmailAlert;
+
+getEmailALertById:
+SELECT * FROM EmailAlert WHERE id = ?;
+
+
+deleteEmailAlert:
+DELETE FROM EmailAlert WHERE id = ?;
+
+clearEmailAlerts:
+DELETE FROM EmailAlert;

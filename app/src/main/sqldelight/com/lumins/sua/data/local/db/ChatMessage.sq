@@ -1,0 +1,20 @@
+import kotlin.Int;
+
+-- ChatMessage Table and its methods
+CREATE TABLE ChatMessage(
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT,
+    message TEXT,
+    role TEXT
+);
+
+insertChatMessage:
+INSERT OR REPLACE INTO ChatMessage (message, role) VALUES (?, ?);
+
+getChatMessages:
+SELECT * FROM ChatMessage;
+
+deleteChatMessage:
+DELETE FROM ChatMessage WHERE id = ?;
+
+clearChatMessages:
+DELETE FROM ChatMessage;

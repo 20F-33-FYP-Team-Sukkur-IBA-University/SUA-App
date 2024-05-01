@@ -1,0 +1,31 @@
+package com.lumins.sua.views.email_alerts
+
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lumins.sua.data.local.db.DatabaseDriverFactory
+import com.lumins.sua.data.local.db.EmailAlert
+import com.lumins.sua.repo.SuaRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+class EmailAlertViewModel(context: Context): ViewModel() {
+    private val repo = SuaRepository(DatabaseDriverFactory(context))
+
+    private val _emailAlerts = MutableStateFlow<List<EmailAlert>>(emptyList())
+    val emailAlerts = _emailAlerts.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _emailAlerts.value = repo.getEmailAlerts(forcedReload = true)
+        }
+    }
+
+    fun deleteEmailAlert(emailAlert: EmailAlert) {
+        viewModelScope.launch {
+            repo.deleteEmailAlert(emailAlert)
+            _emailAlerts.value = repo.getEmailAlerts(forcedReload = false)
+        }
+    }
+}

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SUA</string>
+    <string name="default_notification_channel_id">1</string>
+    <string name="finance_title">Finance</string>
+    <string name="timetable_title">Timetable</string>
+    <string name="chatbot_title">ChatBot</string>
+    <string name="alerts_title">Alerts</string>
+    <string name="settings_title">Settings</string>
+</resources>

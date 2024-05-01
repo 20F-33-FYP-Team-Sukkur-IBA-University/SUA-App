@@ -1,0 +1,26 @@
+import com.lumins.sua.data.model.BudgetType;
+import kotlin.Int;
+import kotlin.Boolean;
+
+-- user Table and its methods
+CREATE TABLE User(
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+insertOrReplaceUser:
+INSERT
+OR
+REPLACE
+INTO User(id, name) VALUES(?, ?);
+
+deleteAllUsers:
+DELETE FROM User;
+
+getUserById:
+SELECT * FROM User
+WHERE id = ?;
+
+getAllUsers:
+SELECT * FROM User;
+

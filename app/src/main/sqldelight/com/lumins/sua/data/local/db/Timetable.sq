@@ -1,0 +1,46 @@
+import kotlin.Int;
+import kotlin.Boolean;
+
+-- Timetable Table and its methods
+CREATE TABLE Timetable(
+    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT,
+    class TEXT,
+    course TEXT,
+    time TEXT,
+    day TEXT,
+    room TEXT,
+    teacher TEXT,
+    starred INTEGER AS Boolean DEFAULT 0
+);
+
+getTimetableForAllClasses:
+SELECT * FROM Timetable;
+
+getTimetableForClass:
+SELECT * FROM Timetable
+WHERE class = ?;
+
+insertTimetable:
+INSERT OR REPLACE INTO
+Timetable( class, course, time, day, room, teacher, starred)
+VALUES ( ?, ?, ?, ?, ?, ?, ?);
+
+updateTimetable:
+UPDATE Timetable
+SET class = ?, course = ?, time = ?, day = ?, room = ?, teacher = ?, starred = ?
+WHERE id = ?;
+
+clearTimetableDatabase:
+DELETE FROM Timetable;
+
+
+clearTimetableDatabaseByClass:
+DELETE FROM Timetable
+WHERE class = ?;
+
+getClassNames:
+SELECT DISTINCT Timetable.class FROM Timetable;
+
+getStarredTimetables:
+SELECT * FROM Timetable
+WHERE starred = 1;
