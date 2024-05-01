@@ -51,7 +51,7 @@ fun MainScreen() {
     var showTopBar by remember { mutableStateOf(true) }
 
     val items = listOf(
-        SuaScreen.Finance, SuaScreen.Timetable, SuaScreen.ChatBot, SuaScreen.EmailAlerts
+        SuaScreen.Timetable, SuaScreen.Finance, SuaScreen.ChatBot, SuaScreen.EmailAlerts
     )
 
 
@@ -106,7 +106,9 @@ fun MainScreen() {
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .clickable { navController.popBackStack() })
+                        .clickable {
+                            navController.popBackStack()
+                        })
             },
             actions = {
                 IconButton(

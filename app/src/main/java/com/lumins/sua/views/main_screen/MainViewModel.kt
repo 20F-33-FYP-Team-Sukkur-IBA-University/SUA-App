@@ -23,7 +23,7 @@ class MainViewModel(context: Context) : ViewModel() {
                 _startDestination.value = if (isFirstTime) {
                     SuaScreen.Onboarding.route
                 } else {
-                    SuaScreen.Finance.route
+                    SuaScreen.Timetable.route
                 }
             }
         }

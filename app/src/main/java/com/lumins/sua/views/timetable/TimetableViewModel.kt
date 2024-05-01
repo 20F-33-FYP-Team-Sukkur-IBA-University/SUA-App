@@ -27,10 +27,10 @@ class TimetableViewModel(context: Context) : ViewModel() {
 
     init {
         viewModelScope.launch {
+            _selectedClassName.value = prefs.getClassName(context, "empty")
             _timetables.value =
                 repo.getClassTimetableByName(false, _selectedClassName.value) + repo.getStarredTimetables()
             _classNames.value = repo.getClassNames(false)
-//            _selectedClassName.value = prefs.getClassName(context, "empty")
         }
 
     }

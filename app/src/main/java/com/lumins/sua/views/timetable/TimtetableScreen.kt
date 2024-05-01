@@ -37,14 +37,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.lumins.sua.android.utils.viewModelFactory
 import com.lumins.sua.navigation.SuaScreen
 import kotlinx.coroutines.launch
@@ -52,7 +50,9 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimetableScreen(navController: NavHostController) {
+fun TimetableScreen(
+    navController: NavHostController
+) {
     val context = LocalContext.current
     val viewModel: TimetableViewModel =
         viewModel(factory = viewModelFactory { TimetableViewModel(context) })
@@ -60,8 +60,8 @@ fun TimetableScreen(navController: NavHostController) {
 
     LaunchedEffect(backStackEntry) {
         if(backStackEntry?.destination?.route == SuaScreen.Timetable.route) {
-            viewModel.refreshClassData(context)
-            Log.d("TAG", "TimetableScreen: LaunchedEffect ran!")
+                viewModel.refreshClassData(context)
+                Log.d("TAG", "TimetableScreen: LaunchedEffect ran!")
         }
     }
 
@@ -196,10 +196,3 @@ fun TimetableScreen(navController: NavHostController) {
     }
 }
 
-@Preview
-@Composable
-fun PreviewTimetableScreen() {
-    MaterialTheme {
-        TimetableScreen(rememberNavController())
-    }
-}
