@@ -4,19 +4,19 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.lumins.sua.android.views.finance.ExpenseCategory
+import com.lumins.sua.views.finance.ExpenseCategory
 
 @Composable
 fun PieChart(
     modifier: Modifier = Modifier,
-    entries: SnapshotStateList<ExpenseCategory>,
+    entries: State<List<ExpenseCategory>>,
     strokeWidth: Float = 80f,
     selectedStrokeWidth: Float = 100f,
     gapAngle: Float = 2f,  // the gap angle,
@@ -26,7 +26,7 @@ fun PieChart(
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.matchParentSize()) {
             var startAngle = 0f
-            entries.toList().forEach { entry ->
+            entries.value.toList().forEach { entry ->
                 val sweepAngle = entry.percentage * 360f - gapAngle
                 drawArc(
                     color = entry.color,

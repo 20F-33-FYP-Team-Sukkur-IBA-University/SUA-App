@@ -1,51 +1,20 @@
-import com.lumins.sua.data.model.BudgetType;
+import com.lumins.sua.data.model.ExpenseType;
 import kotlin.Int;
-
--- UserBudget Table and its methods
-
-CREATE TABLE UserBudget(
-    id INTEGER AS Int PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER AS Int NOT NULL,
-    budget_type TEXT AS BudgetType NOT NULL,
-    budget_amount REAL NOT NULL
-);
-
-insertOrReplaceUserBudget:
-INSERT
-OR
-REPLACE
-INTO UserBudget(id, user_id, budget_type, budget_amount)
-VALUES(?, ?, ?, ?);
-
-deleteUserBudgetById:
-DELETE FROM UserBudget
-WHERE id = ?;
-
-getUserBudgetById:
-SELECT * FROM UserBudget
-WHERE id = ?;
-
-getAllBudgets:
-SELECT * FROM UserBudget;
-
-deleteAllBudgets:
-DELETE FROM UserBudget;
 
 -- UserBudget Table and its methods
 
 CREATE TABLE UserExpense(
     id INTEGER AS Int PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER AS Int NOT NULL,
-    budget_id INTEGER AS Int NOT NULL,
-    expense_name TEXT,
-    expense_amount REAL NOT NULL,
-    expense_datetime TEXT NOT NULL
+    expense_type TEXT AS ExpenseType NOT NULL,
+    name TEXT,
+    amount INTEGER AS Int NOT NULL,
+    datetime TEXT NOT NULL
 );
 
 insertOrReplaceUserExpense:
 INSERT OR REPLACE
-INTO UserExpense(user_id, budget_id, expense_name, expense_amount, expense_datetime)
-VALUES( ?, ?, ?, ?, ?);
+INTO UserExpense(expense_type, name, amount, datetime)
+VALUES(?, ?, ?, ?);
 
 getAllUserExpenses:
 SELECT * FROM UserExpense;
@@ -53,10 +22,6 @@ SELECT * FROM UserExpense;
 getUserExpenseById:
 SELECT * FROM UserExpense
 WHERE id = ?;
-
-getUserExpenseByBudgetId:
-SELECT * FROM UserExpense
-WHERE budget_id = ?;
 
 deleteExpenseByExpenseId:
 DELETE FROM UserExpense

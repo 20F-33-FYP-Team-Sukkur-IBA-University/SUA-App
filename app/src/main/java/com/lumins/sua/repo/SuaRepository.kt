@@ -5,6 +5,7 @@ import com.lumins.sua.data.local.db.DatabaseDriverFactory
 import com.lumins.sua.data.local.db.DatabaseImpl
 import com.lumins.sua.data.local.db.EmailAlert
 import com.lumins.sua.data.local.db.Timetable
+import com.lumins.sua.data.local.db.UserExpense
 import com.lumins.sua.data.remote.SuaAPI
 import kotlinx.datetime.Clock
 
@@ -107,9 +108,9 @@ class SuaRepository(databaseDriverFactory: DatabaseDriverFactory) {
             }
             database.insertTimetables(timetables)
 
-            return timetables.map { it.class_ ?: "" }
+            return timetables.map { it.class_ ?: "" }.distinctBy { it }
         }
-        return cached
+        return cached.distinctBy { it }
     }
 
 
@@ -178,5 +179,17 @@ class SuaRepository(databaseDriverFactory: DatabaseDriverFactory) {
 
     suspend fun deleteEmailAlert(emailAlert: EmailAlert) {
         database.deleteEmailAlert(emailAlert)
+    }
+
+    fun insertExpense(expense: UserExpense) {
+        database.insertOrReplaceExpense(expense)
+    }
+
+    fun getAllExpenses(): List<UserExpense> {
+        return database.getAllExpenses()
+    }
+
+    fun deleteExpense(expense: UserExpense) {
+        database.deleteExpense(expense)
     }
 }

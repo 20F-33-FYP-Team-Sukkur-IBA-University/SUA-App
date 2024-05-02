@@ -98,6 +98,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     implementation("com.airbnb.android:lottie-compose:6.4.0")
+    implementation("co.yml:ycharts:2.1.0")
 }
 
 sqldelight {

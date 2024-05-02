@@ -14,24 +14,22 @@ import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
+import androidx.navigation.navArgument
 import com.lumins.sua.R
-import com.lumins.sua.android.views.finance.SingleWeekFinanceScreen
 import com.lumins.sua.views.chatbot.ChatBotScreen
 import com.lumins.sua.views.email_alerts.EmailAlertsScreen
 import com.lumins.sua.views.finance.FinanceScreen
+import com.lumins.sua.views.finance.SingleWeekFinanceScreen
+import com.lumins.sua.views.finance.components.FinanceCardType
 import com.lumins.sua.views.onboarding.OnboardingScreen
 import com.lumins.sua.views.settings.SettingsScreen
 import com.lumins.sua.views.timetable.TimetableScreen
@@ -61,27 +59,28 @@ fun SuaNavHost(
         }
 
         composable(route = SuaScreen.Loading.route) {
-            val lottieCompo by rememberLottieComposition(
-                spec = LottieCompositionSpec.RawRes(R.raw.lottie_loading)
-            )
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                if(lottieCompo != null) {
-                    LottieAnimation(
-                        composition = lottieCompo,
-                        iterations = LottieConstants.IterateForever
-                    )
-                } else {
+
                     Column {
                         CircularProgressIndicator()
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(text = "Loading...")
                     }
-                }
+
             }
         }
 
-        composable(route = SuaScreen.SingleWeekFinance.route) {
-            SingleWeekFinanceScreen()
+        composable(
+            route = "${SuaScreen.SingleWeekFinance.route}/{cardType}",
+            arguments = listOf(
+                navArgument("cardType") {
+                    type = NavType.StringType
+                    defaultValue = FinanceCardType.WEEK.name
+                }
+            )
+        ) {
+            val cardType = FinanceCardType.valueOf(it.arguments?.getString("cardType")!!)
+            SingleWeekFinanceScreen(cardType)
         }
 
         composable(route = SuaScreen.Timetable.route) {
@@ -115,4 +114,5 @@ sealed class SuaScreen(val route: String, val resourceId: Int, val icon: ImageVe
     data object Settings : SuaScreen("sua-settings", R.string.alerts_title, Icons.Rounded.Settings)
     data object Onboarding : SuaScreen("onboarding", R.string.alerts_title, Icons.Rounded.Settings)
     data object Loading : SuaScreen("loading", R.string.alerts_title, Icons.Rounded.Settings)
+    data object FinanceOnboarding : SuaScreen("finance-onboarding", R.string.alerts_title, Icons.Rounded.Settings)
 }

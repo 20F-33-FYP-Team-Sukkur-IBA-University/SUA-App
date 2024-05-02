@@ -1,5 +1,6 @@
 package com.lumins.sua.views.main_screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,6 +50,7 @@ fun MainScreen() {
     var showTopAppBarNavigationButton by remember { mutableStateOf(false) }
     var showBottomNavigation by remember { mutableStateOf(false) }
     var showTopBar by remember { mutableStateOf(true) }
+    var currentDestination by remember { mutableStateOf("") }
 
     val items = listOf(
         SuaScreen.Timetable, SuaScreen.Finance, SuaScreen.ChatBot, SuaScreen.EmailAlerts
@@ -58,6 +60,7 @@ fun MainScreen() {
 
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect {
+            currentDestination = it.destination.route ?: ""
             when (it.destination.route) {
                 SuaScreen.Finance.route -> {
                     topAppBarTitle = "Financials"; showTopAppBarNavigationButton = false
@@ -90,7 +93,7 @@ fun MainScreen() {
                 }
 
                 else -> {
-                    topAppBarTitle = "Unknown Screen"; showTopAppBarNavigationButton = true
+                    topAppBarTitle = "Unknown Screen"; showTopAppBarNavigationButton = false
                     showBottomNavigation = false; showTopBar = false
                 }
             }
@@ -111,11 +114,13 @@ fun MainScreen() {
                         })
             },
             actions = {
-                IconButton(
-                    onClick = { navController.navigate(SuaScreen.Settings.route) },
-                    Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(imageVector = Icons.Rounded.Settings, contentDescription = null)
+                AnimatedVisibility(visible = (currentDestination == SuaScreen.Timetable.route)) {
+                    IconButton(
+                        onClick = { navController.navigate(SuaScreen.Settings.route) },
+                        Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Icon(imageVector = Icons.Rounded.Settings, contentDescription = null)
+                    }
                 }
             }
         )

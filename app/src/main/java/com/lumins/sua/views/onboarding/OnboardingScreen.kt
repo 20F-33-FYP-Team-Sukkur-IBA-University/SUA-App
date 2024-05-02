@@ -1,6 +1,7 @@
 package com.lumins.sua.views.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,9 +62,9 @@ fun OnboardingScreen(onBoardingDone: () -> Unit) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-
+    val isDarkTheme = isSystemInDarkTheme()
     val lottieComp =
-        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lottie_hi))
+        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(if (isDarkTheme) R.raw.lottie_hi_dark else R.raw.lottie_hi))
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

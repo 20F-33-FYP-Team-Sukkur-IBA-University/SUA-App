@@ -20,12 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lumins.sua.android.utils.formatWithCommas
+import com.lumins.sua.data.local.db.UserExpense
+import java.util.Calendar
 
 
 @Composable
 fun FinanceReportCard(
     modifier: Modifier = Modifier,
-    onWeekChipClick: () -> Unit
+    expenses: List<UserExpense>,
+    todayAmount: Int,
+    weekAmount: Int,
+    monthAmount: Int,
+    onCardClick: (FinanceCardType) -> Unit
 ) {
 
     Card(
@@ -50,17 +56,17 @@ fun FinanceReportCard(
                     modifier = Modifier
                         .height(140.dp)
                         .width(110.dp),
-                    title = "Income", amount = 3000)
+                    title = "Today", amount = todayAmount) { onCardClick(FinanceCardType.TODAY) }
                 SimpleClickableCard(
                     modifier = Modifier
                         .height(140.dp)
                         .width(120.dp),
-                    title = "Expense", amount = 1500)
+                    title = "This Week", amount = weekAmount) { onCardClick(FinanceCardType.WEEK) }
                 SimpleClickableCard(
                     modifier = Modifier
                         .height(140.dp)
                         .width(120.dp),
-                    title = "Savings", amount = 1500)
+                    title = "This Month", amount = monthAmount) { onCardClick(FinanceCardType.MONTH) }
             }
         }
     }
@@ -70,14 +76,15 @@ fun FinanceReportCard(
 private fun SimpleClickableCard(
     modifier: Modifier = Modifier,
     title: String,
-    amount: Int
+    amount: Int,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        onClick = { /*TODO*/ },
+        onClick = { onClick() },
     ) {
         Column(
             Modifier.fillMaxSize(),
@@ -98,4 +105,9 @@ private fun SimpleClickableCard(
             )
         }
     }
+}
+
+
+enum class FinanceCardType {
+    TODAY, WEEK, MONTH
 }
