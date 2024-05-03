@@ -98,8 +98,10 @@ private fun MainFinanceScreen(viewModel: FinanceViewModel, navigateTo: (String) 
     val monthAmount by viewModel.monthAmount.collectAsStateWithLifecycle()
 
     LaunchedEffect(expenses) {
-        viewModel.updateExpenseChart()
-        viewModel.updateExpenseReport()
+        if(expenses.isNotEmpty()) {
+            viewModel.updateExpenseChart()
+            viewModel.updateExpenseReport()
+        }
 
     }
 
