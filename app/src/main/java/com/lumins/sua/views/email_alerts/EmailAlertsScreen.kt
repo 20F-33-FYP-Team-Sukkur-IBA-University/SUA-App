@@ -48,7 +48,7 @@ fun EmailAlertsScreen() {
     val context = LocalContext.current
     val viewModel: EmailAlertViewModel =
         viewModel(factory = viewModelFactory { EmailAlertViewModel(context) })
-    val alerts = viewModel.emailAlerts.collectAsStateWithLifecycle()
+    val alerts by viewModel.emailAlerts.collectAsStateWithLifecycle()
 
     LazyColumn(
         Modifier
@@ -56,7 +56,7 @@ fun EmailAlertsScreen() {
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(alerts.value) { alert ->
+        items(alerts.sortedByDescending { it.alertTime }) { alert ->
             EmailAlertItem(alert) { viewModel.deleteEmailAlert(it)  }
         }
     }
