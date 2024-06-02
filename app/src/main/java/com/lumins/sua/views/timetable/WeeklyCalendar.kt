@@ -1,5 +1,6 @@
 package com.lumins.sua.views.timetable
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +38,8 @@ import java.util.Locale
 fun WeeklyCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate,
-    onDateSelection: (LocalDate) -> Unit
+    onWeekScroll: (LocalDate) -> Unit,
+    onDateSelection: (LocalDate) -> Unit,
 ) {
     val currentDate = remember { LocalDate.now() }
     val currentMonth = remember { YearMonth.now() }
@@ -51,6 +54,10 @@ fun WeeklyCalendar(
         firstVisibleWeekDate = currentDate,
         firstDayOfWeek = firstDayOfWeek
     )
+
+    LaunchedEffect(state.firstVisibleWeek) {
+        onWeekScroll(state.firstVisibleWeek.days.first().date)
+    }
 
     WeekCalendar(
         modifier = modifier,
@@ -78,6 +85,18 @@ fun WeeklyDay(
     selected: Boolean,
     onClick: (WeekDay) -> Unit
 ) {
+    LaunchedEffect(key1 = selected) {
+        Log.d(
+            "TAG",
+            "WeeklyDay: selected = ${
+                day.date.dayOfWeek.getDisplayName(
+                    TextStyle.FULL,
+                    Locale.getDefault()
+                )
+            }"
+        )
+
+    }
 
     Box(
         modifier = modifier,
@@ -88,7 +107,20 @@ fun WeeklyDay(
             modifier = Modifier
                 .fillMaxSize(0.9f)
                 .clip(CircleShape)
-                .background(if (selected) SuaColors.primaryBlueVariant else Color.Transparent)
+                .background(
+                    if (selected) SuaColors.primaryBlueVariant else (
+                            if (day.date.dayOfWeek.getDisplayName(
+                                    TextStyle.FULL,
+                                    Locale.getDefault()
+                                ) == "Sunday" || day.date.dayOfWeek.getDisplayName(
+                                    TextStyle.FULL,
+                                    Locale.getDefault()
+                                ) == "Saturday"
+                            ) Color.Red.copy(
+                                alpha = 0.2f
+                            )
+                            else Color.Transparent)
+                )
                 .clickable { onClick(day) },
             Alignment.Center,
         ) {

@@ -1,6 +1,8 @@
 package com.lumins.sua.views.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Button
@@ -33,7 +37,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,9 +70,6 @@ fun OnboardingScreen(onBoardingDone: () -> Unit) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    val isDarkTheme = isSystemInDarkTheme()
-    val lottieComp =
-        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(if (isDarkTheme) R.raw.lottie_hi_dark else R.raw.lottie_hi))
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -109,15 +114,15 @@ fun OnboardingScreen(onBoardingDone: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            lottieComp.value?.let {
-                LottieAnimation(
-                    modifier = Modifier.height(400.dp),
-                    composition = it,
-                    iterations = LottieConstants.IterateForever
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.reunded_ic_launcher),
+                contentDescription = "icon",
+                modifier = Modifier
+                    .size(120.dp),
+                contentScale = ContentScale.FillBounds
+            )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(

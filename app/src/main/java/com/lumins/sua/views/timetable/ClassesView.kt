@@ -3,6 +3,7 @@ package com.lumins.sua.views.timetable
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,13 +40,28 @@ import com.lumins.sua.ui.theme.generateRandomBrightColor
 fun ClassesView(
     modifier: Modifier = Modifier,
     timetables: List<Timetable>,
+    isRefreshing: Boolean = false,
     onStarredToggled: (Timetable) -> Unit = {},
     contentBeforeTimeTable: @Composable () -> Unit = {}
 ) {
+
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item { contentBeforeTimeTable() }
 
-        if (timetables.isEmpty()) {
+        if(isRefreshing) item {
+            Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
+                Column( horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator()
+                    Text(
+                        text = "Refreshing...",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
+
+        if (timetables.isEmpty() && !isRefreshing) {
             item {
                 Text(
                     text = "No classes found",

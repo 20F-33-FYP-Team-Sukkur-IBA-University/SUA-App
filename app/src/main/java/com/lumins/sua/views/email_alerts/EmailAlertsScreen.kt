@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.DeleteForever
@@ -41,6 +39,7 @@ import com.lumins.sua.data.local.db.EmailAlert
 import com.lumins.sua.repo.SuaRepository
 import com.lumins.sua.ui.theme.SUATheme
 import com.lumins.sua.ui.theme.SuaColors
+import com.lumins.sua.views.utils.AlertsPullToRefreshLazyColumn
 import java.time.Instant
 
 @Composable
@@ -48,18 +47,22 @@ fun EmailAlertsScreen() {
     val context = LocalContext.current
     val viewModel: EmailAlertViewModel =
         viewModel(factory = viewModelFactory { EmailAlertViewModel(context) })
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val alerts by viewModel.emailAlerts.collectAsStateWithLifecycle()
 
-    LazyColumn(
-        Modifier
+    AlertsPullToRefreshLazyColumn(
+        modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(alerts.sortedByDescending { it.alertTime }) { alert ->
-            EmailAlertItem(alert) { viewModel.deleteEmailAlert(it)  }
+        items = alerts.sortedByDescending { it.alertTime },
+        isRefreshing = isRefreshing,
+        onRefresh = { viewModel.refresh() },
+        content =
+        { alert ->
+            EmailAlertItem(alert) { viewModel.deleteEmailAlert(it) }
+
         }
-    }
+    )
 
 }
 
@@ -78,7 +81,7 @@ fun EmailAlertItem(alert: EmailAlert, onDelete: (EmailAlert) -> Unit) {
                 .fillMaxWidth(),
         ) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                IconButton( onClick = { onDelete(alert) }) {
+                IconButton(onClick = { onDelete(alert) }) {
                     Icon(
                         imageVector = Icons.Rounded.DeleteForever,
                         contentDescription = "delete",
@@ -98,7 +101,10 @@ fun EmailAlertItem(alert: EmailAlert, onDelete: (EmailAlert) -> Unit) {
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp),
             ) {
-                Text(text = alert.subject, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text(
+                    text = alert.subject,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
 
 
                 Row(

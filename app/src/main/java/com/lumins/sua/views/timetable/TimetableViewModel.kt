@@ -25,15 +25,23 @@ class TimetableViewModel(context: Context) : ViewModel() {
     private var _selectedClassName = MutableStateFlow("empty")
     val selectedClassName = _selectedClassName.asStateFlow()
 
+    private var _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     init {
         viewModelScope.launch {
             _selectedClassName.value = prefs.getClassName(context, "empty")
             _timetables.value =
-                repo.getClassTimetableByName(false, _selectedClassName.value) + repo.getStarredTimetables()
+                repo.getClassTimetableByName(
+                    false,
+                    _selectedClassName.value
+                ) + repo.getStarredTimetables()
             _classNames.value = repo.getClassNames(false)
+
         }
 
     }
+
 
     fun onEvent(event: TimetableEvents) {
         when (event) {
@@ -59,6 +67,24 @@ class TimetableViewModel(context: Context) : ViewModel() {
                 }
 
             }
+
+            is TimetableEvents.RefreshTimetable -> {
+                Log.d("RefreshTimetable", "onEvent:start ")
+                viewModelScope.launch {
+                    Log.d("RefreshTimetable", "onEvent:start ")
+                    _isRefreshing.value = true
+                    try {
+                        _timetables.value = emptyList()
+                        _timetables.value = getUpdatedTimetables(_selectedClassName.value, true)
+
+                        Log.d("RefreshTimetable", "onEvent:loading ")
+                    } finally {
+                        _isRefreshing.value = false
+
+                        Log.d("RefreshTimetable", "onEvent:finished ")
+                    }
+                }
+            }
         }
     }
 
@@ -72,11 +98,14 @@ class TimetableViewModel(context: Context) : ViewModel() {
         }
     }
 
-    private suspend fun getUpdatedTimetables(className: String): List<Timetable> {
-        if(className == "empty") return emptyList()
+    private suspend fun getUpdatedTimetables(
+        className: String,
+        forceReload: Boolean = false
+    ): List<Timetable> {
+        if (className == "empty") return emptyList()
 
         val allTimetables = repo.getClassTimetableByName(
-            false,
+            forceReload,
             className
         ) + repo.getStarredTimetables()
         Log.d(
@@ -93,4 +122,5 @@ sealed class TimetableEvents {
     data object TimetableReload : TimetableEvents()
     data class SelectedClassName(val className: String) : TimetableEvents()
     data class StarredToggled(val timetable: Timetable) : TimetableEvents()
+    data object RefreshTimetable : TimetableEvents()
 }

@@ -15,6 +15,9 @@ class ChatBotViewModel(context: Context) : ViewModel() {
 
     private var _className = MutableStateFlow("BS-VIII(CS)-A")
 
+    private var _isWaitingForResponse = MutableStateFlow(false)
+    val isWaitingForResponse = _isWaitingForResponse.asStateFlow()
+
     private var _messages = MutableStateFlow(listOf<ChatMessage>())
     val messages = _messages.asStateFlow()
 
@@ -25,6 +28,7 @@ class ChatBotViewModel(context: Context) : ViewModel() {
     }
 
     fun sendMessageToAI(message: String) {
+        _isWaitingForResponse.value = true
         viewModelScope.launch {
             repo.insertChatMessage(ChatMessage(0, message = message, role = "user"))
             _messages.value = _messages.value.plus(ChatMessage(0, message = message, role = "user"))
@@ -34,6 +38,7 @@ class ChatBotViewModel(context: Context) : ViewModel() {
             )
             if (res) {
                 _messages.value = repo.getDbChatMessages()
+                _isWaitingForResponse.value = false
             }
         }
     }

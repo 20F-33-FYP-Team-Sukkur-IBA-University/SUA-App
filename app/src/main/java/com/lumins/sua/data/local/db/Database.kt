@@ -24,6 +24,8 @@ internal interface Database {
 
     fun getAllEmailAlerts(): List<EmailAlert>
 
+    fun clearAllEmailAlerts()
+
     fun deleteEmailAlert(emailAlert: EmailAlert)
 
     fun deleteExpense(expense: UserExpense)

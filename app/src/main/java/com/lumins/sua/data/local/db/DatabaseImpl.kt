@@ -145,6 +145,10 @@ internal class DatabaseImpl(databaseDriverFactory: DatabaseDriverFactory) : Data
         return emailAlertQueries.getAllEmailAlerts().executeAsList()
     }
 
+    override fun clearAllEmailAlerts() {
+        emailAlertQueries.clearEmailAlerts()
+    }
+
     override fun deleteEmailAlert(emailAlert: ModelEmailAlert) {
         emailAlertQueries.deleteEmailAlert(emailAlert.id)
     }

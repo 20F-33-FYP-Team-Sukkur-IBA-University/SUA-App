@@ -101,29 +101,25 @@ fun MainScreen() {
     }
 
     Scaffold(topBar = {
-        if (showTopBar) TopAppBar(
-            title = { Text(text = topAppBarTitle) },
-            navigationIcon = {
-                if (showTopAppBarNavigationButton) Icon(imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            navController.popBackStack()
-                        })
-            },
-            actions = {
-                AnimatedVisibility(visible = (currentDestination == SuaScreen.Timetable.route)) {
-                    IconButton(
-                        onClick = { navController.navigate(SuaScreen.Settings.route) },
-                        Modifier.align(Alignment.CenterVertically)
-                    ) {
-                        Icon(imageVector = Icons.Rounded.Settings, contentDescription = null)
-                    }
+        if (showTopBar) TopAppBar(title = { Text(text = topAppBarTitle) }, navigationIcon = {
+            if (showTopAppBarNavigationButton) Icon(imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        navController.popBackStack()
+                    })
+        }, actions = {
+            AnimatedVisibility(visible = (currentDestination == SuaScreen.Timetable.route)) {
+                IconButton(
+                    onClick = { navController.navigate(SuaScreen.Settings.route) },
+                    Modifier.align(Alignment.CenterVertically)
+                ) {
+                    Icon(imageVector = Icons.Rounded.Settings, contentDescription = null)
                 }
             }
-        )
+        })
     }, bottomBar = {
 
 
@@ -134,8 +130,7 @@ fun MainScreen() {
             items.forEach { screen ->
                 NavigationBarItem(icon = {
                     Icon(
-                        screen.icon,
-                        contentDescription = null
+                        screen.icon, contentDescription = null
                     )
                 },
                     label = {

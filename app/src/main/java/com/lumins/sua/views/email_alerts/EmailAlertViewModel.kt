@@ -16,10 +16,22 @@ class EmailAlertViewModel(context: Context): ViewModel() {
     private val _emailAlerts = MutableStateFlow<List<EmailAlert>>(emptyList())
     val emailAlerts = _emailAlerts.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     init {
         viewModelScope.launch {
             _emailAlerts.value = repo.getEmailAlerts(forcedReload = true)
         }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            _emailAlerts.value = repo.getEmailAlerts(forcedReload = true)
+            _isRefreshing.value = false
+        }
+
     }
 
     fun deleteEmailAlert(emailAlert: EmailAlert) {

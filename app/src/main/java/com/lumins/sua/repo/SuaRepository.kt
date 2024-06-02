@@ -159,7 +159,7 @@ class SuaRepository(databaseDriverFactory: DatabaseDriverFactory) {
         val cached = database.getAllEmailAlerts()
         if (cached.isEmpty() || forcedReload) {
             val alerts = api.getEmailAlerts()
-
+            database.clearAllEmailAlerts()
             alerts.forEach { alert
                 ->
                 database.insertEmailAlert(

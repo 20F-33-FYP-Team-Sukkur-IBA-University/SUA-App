@@ -33,9 +33,12 @@ android {
         }
     }
     compileOptions {
+//        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -44,6 +47,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.5"
+
     }
     packaging {
         resources {
@@ -51,6 +55,7 @@ android {
             excludes += "META-INF/versions/9/previous-compilation-data.bin"
         }
     }
+
 }
 
 dependencies {
@@ -62,7 +67,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+//    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.second)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,6 +106,7 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.4.0")
     implementation("co.yml:ycharts:2.1.0")
 }
+
 
 sqldelight {
     databases {

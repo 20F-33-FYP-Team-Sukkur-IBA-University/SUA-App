@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,11 +59,11 @@ fun TimetableScreen(
     val viewModel: TimetableViewModel =
         viewModel(factory = viewModelFactory { TimetableViewModel(context) })
     val backStackEntry by navController.currentBackStackEntryAsState()
-
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     LaunchedEffect(backStackEntry) {
-        if(backStackEntry?.destination?.route == SuaScreen.Timetable.route) {
-                viewModel.refreshClassData(context)
-                Log.d("TAG", "TimetableScreen: LaunchedEffect ran!")
+        if (backStackEntry?.destination?.route == SuaScreen.Timetable.route) {
+            viewModel.refreshClassData(context)
+            Log.d("TAG", "TimetableScreen: LaunchedEffect ran!")
         }
     }
 
@@ -70,6 +72,7 @@ fun TimetableScreen(
     val selectedClassName by viewModel.selectedClassName.collectAsStateWithLifecycle()
     var selectedIndex by remember { mutableIntStateOf(0) }
     var selectedDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
+    var currentMonthDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
     val filteredTimetables = timetables.filter {
         it.day!!.lowercase() == selectedDate.dayOfWeek.name.lowercase().subSequence(0, 2)
     }
@@ -90,8 +93,8 @@ fun TimetableScreen(
                 tonalElevation = 8.dp,
                 properties = ModalBottomSheetProperties(
                     shouldDismissOnBackPress = true,
-                    isFocusable = true,
-                    securePolicy = SecureFlagPolicy.Inherit
+                    securePolicy = SecureFlagPolicy.Inherit,
+                    isFocusable = true
                 ),
                 onDismissRequest = {
                     scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -114,13 +117,29 @@ fun TimetableScreen(
             }
         }
 
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CalendarModeSelect(onSelection = { selected -> selectedIndex = selected })
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                CalendarModeSelect(onSelection = { selected -> selectedIndex = selected })
+
+                IconButton(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    onClick = {
+                    viewModel.onEvent(TimetableEvents.RefreshTimetable)
+                }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Refresh,
+                        contentDescription = "Refresh",
+                        Modifier.size(44.dp)
+                    )
+                }
+            }
 
             Row(
                 Modifier
@@ -165,7 +184,7 @@ fun TimetableScreen(
                     .padding(top = 4.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${selectedDate.month.name} ${selectedDate.year}",
+                    text = "${currentMonthDate.month.name} ${currentMonthDate.year}",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier
                         .align(Alignment.Start)
@@ -173,7 +192,8 @@ fun TimetableScreen(
                 )
                 AnimatedVisibility(selectedIndex == 0) {
                     WeeklyCalendar(
-                        selectedDate = selectedDate
+                        selectedDate = selectedDate,
+                        onWeekScroll = { date -> currentMonthDate = date }
                     ) { selected -> selectedDate = selected }
                 }
 
@@ -182,16 +202,19 @@ fun TimetableScreen(
                     ClassesView(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         timetables = filteredTimetables,
-                        onStarredToggled = { viewModel.onEvent(TimetableEvents.StarredToggled(it)) }
+                        isRefreshing = isRefreshing,
+                        onStarredToggled = { viewModel.onEvent(TimetableEvents.StarredToggled(it)) },
                     ) {
                         AnimatedVisibility(selectedIndex == 1) {
                             MonthlyCalendar(
-                                modifier = Modifier, selectedDate = selectedDate
+                                modifier = Modifier, selectedDate = selectedDate,
+                                onMonthScroll = { date -> currentMonthDate = date }
                             ) { selected -> selectedDate = selected }
                         }
                     }
                 }
             }
+
         }
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lumins.sua.android.utils.viewModelFactory
+import com.lumins.sua.utils.DotsTyping
 
 @Composable
 fun ChatBotScreen() {
@@ -43,6 +44,7 @@ fun ChatBotScreen() {
         viewModel(factory = viewModelFactory { ChatBotViewModel(context) })
     val messages by viewModel.messages.collectAsStateWithLifecycle()
     var showConfirmationDialog by remember { mutableStateOf(false) }
+    var isWaitingForMessageResponse = viewModel.isWaitingForResponse.collectAsStateWithLifecycle()
 
 
     Scaffold(
@@ -64,7 +66,8 @@ fun ChatBotScreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(it),
+            contentAlignment = Alignment.Center
         ) {
             AnimatedVisibility(visible = showConfirmationDialog) {
                 AlertDialog(
@@ -123,6 +126,12 @@ fun ChatBotScreen() {
                         }
                     }
                 }
+            }
+
+            AnimatedVisibility(visible = isWaitingForMessageResponse.value, Modifier.fillMaxWidth().align(Alignment.BottomCenter)) {
+                DotsTyping(
+                    modifier = Modifier.padding(top = 10.dp).fillMaxWidth().align(Alignment.BottomCenter)
+                )
             }
         }
 

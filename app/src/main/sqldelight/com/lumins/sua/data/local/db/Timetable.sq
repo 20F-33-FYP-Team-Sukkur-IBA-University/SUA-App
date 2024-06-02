@@ -31,7 +31,8 @@ SET class = ?, course = ?, time = ?, day = ?, room = ?, teacher = ?, starred = ?
 WHERE id = ?;
 
 clearTimetableDatabase:
-DELETE FROM Timetable;
+DELETE FROM Timetable
+WHERE starred != 1;
 
 
 clearTimetableDatabaseByClass:

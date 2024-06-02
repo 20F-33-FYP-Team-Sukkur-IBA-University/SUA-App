@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,12 +26,15 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.lumins.sua.ui.theme.SuaColors
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun MonthlyCalendar(
     modifier: Modifier,
     selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit
+    onMonthScroll: (LocalDate) -> Unit,
+    onDateSelected: (LocalDate) -> Unit,
 ) {
 
     val currentMonth = remember { YearMonth.now() }
@@ -44,6 +48,10 @@ fun MonthlyCalendar(
         firstVisibleMonth = currentMonth,
         firstDayOfWeek = firstDayOfWeek
     )
+
+    LaunchedEffect(state.firstVisibleMonth) {
+        onMonthScroll(state.firstVisibleMonth.yearMonth.atDay(1))
+    }
 
     HorizontalCalendar(
         state = state,
@@ -79,7 +87,19 @@ fun MonthlyDay(
             modifier = Modifier
                 .fillMaxSize(0.9f)
                 .clip(CircleShape)
-                .background(if (selected) SuaColors.primaryBlueVariant else Color.Transparent)
+                .background(
+                    if (selected) SuaColors.primaryBlueVariant else (
+                            if (day.date.dayOfWeek.getDisplayName(
+                                    TextStyle.FULL,
+                                    Locale.getDefault()
+                                ) == "Sunday" || day.date.dayOfWeek.getDisplayName(
+                                    TextStyle.FULL,
+                                    Locale.getDefault()
+                                ) == "Saturday"
+                            ) Color.Red.copy(
+                                alpha = 0.2f
+                            ) else Color.Transparent)
+                )
                 .clickable(
                     enabled = day.position == DayPosition.MonthDate,
                     onClick = { onClick(day.date) }
@@ -89,7 +109,8 @@ fun MonthlyDay(
             Text(
                 text = (day.date.dayOfMonth.toString()),
                 style = MaterialTheme.typography.titleMedium,
-                color = if (selected) Color.White.copy(alpha) else MaterialTheme.colorScheme.onBackground.copy(
+                color = if (selected) Color.White.copy(alpha)
+                else MaterialTheme.colorScheme.onBackground.copy(
                     alpha
                 )
             )
